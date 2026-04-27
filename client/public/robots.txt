@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# Block private/admin routes
+Disallow: /admin-coldtech-secure/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /activate
+Disallow: /cart
+
+# Block API routes
+Disallow: /api/
+
+# Allow important crawlable assets
+Allow: /public/
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Crawl delay for polite crawling
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://coldtechtechnologies.in/sitemap.xml
