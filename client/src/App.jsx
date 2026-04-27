@@ -30,6 +30,7 @@ import { AdminLayout } from './pages/admin/AdminLayout';
 import { ModernAdminLayout } from './pages/admin/ModernAdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { ModernDashboard } from './pages/admin/ModernDashboard';
+import { IntelligentDashboard } from './pages/admin/IntelligentDashboard';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminServices } from './pages/admin/AdminServices';
@@ -114,7 +115,7 @@ export default function App() {
             </Route>
 
             <Route path="/admin-coldtech-secure" element={<ModernAdminLayout />}>
-              <Route index element={<ModernDashboard />} />
+              <Route index element={<IntelligentDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="services" element={<AdminServices />} />
