@@ -29,6 +29,7 @@ const NAV_SECTIONS = [
       { to: '/admin-coldtech-secure/testimonials', label: 'Testimonials', icon: MessageSquare },
       { to: '/admin-coldtech-secure/gallery', label: 'Work Gallery', icon: Camera },
       { to: '/admin-coldtech-secure/blog', label: 'Blog Posts', icon: BookOpen },
+      { to: '/admin-coldtech-secure/ai-blog', label: '✦ AI Blog', icon: Zap },
       { to: '/admin-coldtech-secure/amc', label: 'AMC Clients', icon: Shield },
     ]
   },
@@ -43,11 +44,12 @@ const NAV_SECTIONS = [
       { to: '/admin-coldtech-secure/accounting/invoices', label: 'Acc. Invoices', icon: FileText },
       { to: '/admin-coldtech-secure/accounting/payments', label: 'Payments', icon: CreditCard },
       { to: '/admin-coldtech-secure/accounting/reports', label: 'Reports', icon: BarChart3 },
+      { to: '/admin-coldtech-secure/invoice-preview', label: 'Invoice Template', icon: FileText },
     ]
   }
 ];
 
-export function ModernSidebar({ isCollapsed, onToggle, onLogout, userEmail }) {
+export function ModernSidebar({ isCollapsed, onToggle, onLogout, userEmail, isAdmin = true }) {
   return (
     <aside className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-40 ${isCollapsed ? 'w-20' : 'w-64'}`}>
       <div className="flex flex-col h-full">
@@ -59,7 +61,7 @@ export function ModernSidebar({ isCollapsed, onToggle, onLogout, userEmail }) {
               <img src={logo} alt="Coldtech" className="w-8 h-8 rounded-lg object-cover" />
               <div>
                 <p className="font-bold text-gray-900 text-sm">Coldtech</p>
-                <p className="text-xs text-gray-500">Admin Panel</p>
+                <p className="text-xs text-gray-500">{isAdmin ? 'Admin Panel' : 'Staff Panel'}</p>
               </div>
             </div>
           )}
@@ -78,38 +80,46 @@ export function ModernSidebar({ isCollapsed, onToggle, onLogout, userEmail }) {
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-4 overflow-y-auto">
-          {NAV_SECTIONS.map((section, idx) => (
-            <div key={idx} className="mb-6">
-              {!isCollapsed && (
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-2">
-                  {section.label}
-                </p>
-              )}
-              <div className="space-y-1">
-                {section.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      end={item.end}
-                      className={({ isActive }) =>
-                        `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
-                          isActive
-                            ? 'bg-indigo-50 text-indigo-600'
-                            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                        } ${isCollapsed ? 'justify-center' : ''}`
-                      }
-                      title={isCollapsed ? item.label : ''}
-                    >
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      {!isCollapsed && <span>{item.label}</span>}
-                    </NavLink>
-                  );
-                })}
+          {NAV_SECTIONS.map((section, idx) => {
+            // For staff, only show Dashboard
+            if (!isAdmin && section.label !== 'Main') return null;
+            
+            return (
+              <div key={idx} className="mb-6">
+                {!isCollapsed && (
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-2">
+                    {section.label}
+                  </p>
+                )}
+                <div className="space-y-1">
+                  {section.items.map((item) => {
+                    // For staff, only show Dashboard
+                    if (!isAdmin && item.to !== '/admin-coldtech-secure') return null;
+                    
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={item.to}
+                        to={item.to}
+                        end={item.end}
+                        className={({ isActive }) =>
+                          `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group ${
+                            isActive
+                              ? 'bg-indigo-50 text-indigo-600'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                          } ${isCollapsed ? 'justify-center' : ''}`
+                        }
+                        title={isCollapsed ? item.label : ''}
+                      >
+                        <Icon className="w-5 h-5 flex-shrink-0" />
+                        {!isCollapsed && <span>{item.label}</span>}
+                      </NavLink>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
         {/* Footer */}
