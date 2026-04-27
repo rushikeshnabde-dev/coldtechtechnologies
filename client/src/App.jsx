@@ -27,7 +27,9 @@ import { RefundPolicy } from './pages/RefundPolicy';
 import { ServiceTerms } from './pages/ServiceTerms';
 import { Services } from './pages/Services';
 import { AdminLayout } from './pages/admin/AdminLayout';
+import { ModernAdminLayout } from './pages/admin/ModernAdminLayout';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { ModernDashboard } from './pages/admin/ModernDashboard';
 import { AdminProducts } from './pages/admin/AdminProducts';
 import { AdminOrders } from './pages/admin/AdminOrders';
 import { AdminServices } from './pages/admin/AdminServices';
@@ -50,6 +52,7 @@ import { AdminAccountingProducts } from './pages/admin/AdminAccountingProducts';
 import { AdminAccountingInvoices } from './pages/admin/AdminAccountingInvoices';
 import { AdminPayments } from './pages/admin/AdminPayments';
 import { AdminReports } from './pages/admin/AdminReports';
+import { AdminInvoicePreview } from './pages/admin/AdminInvoicePreview';
 import { useAuth } from './context/AuthContext';
 
 import { ScrollToTop } from './components/ScrollToTop';
@@ -110,6 +113,11 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
 
+            {/* Modern Admin Dashboard */}
+            <Route path="/admin-modern" element={<ModernAdminLayout />}>
+              <Route index element={<ModernDashboard />} />
+            </Route>
+
             <Route path="/admin-coldtech-secure" element={<AdminLayout />}>
               <Route index element={<AdminIndex />} />
               <Route path="products" element={<AdminProducts />} />
@@ -133,6 +141,7 @@ export default function App() {
               <Route path="accounting/invoices" element={<AdminAccountingInvoices />} />
               <Route path="accounting/payments" element={<AdminPayments />} />
               <Route path="accounting/reports" element={<AdminReports />} />
+              <Route path="invoice-preview" element={<AdminInvoicePreview />} />
             </Route>
           </Routes>
         </BrowserRouter>

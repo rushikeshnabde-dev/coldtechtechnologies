@@ -33,6 +33,7 @@ const ADMIN_NAV = [
   { to: '/admin-coldtech-secure/accounting/invoices',  label: 'Acc. Invoices',   icon: FiFileText },
   { to: '/admin-coldtech-secure/accounting/payments',  label: 'Payments',        icon: FiCreditCard },
   { to: '/admin-coldtech-secure/accounting/reports',   label: 'Reports',         icon: FiBarChart2 },
+  { to: '/admin-coldtech-secure/invoice-preview',      label: 'Invoice Template', icon: FiFileText },
 ];
 
 const STAFF_NAV = [
