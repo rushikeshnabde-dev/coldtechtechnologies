@@ -54,6 +54,9 @@ import { AdminAccountingInvoices } from './pages/admin/AdminAccountingInvoices';
 import { AdminPayments } from './pages/admin/AdminPayments';
 import { AdminReports } from './pages/admin/AdminReports';
 import { AdminInvoicePreview } from './pages/admin/AdminInvoicePreview';
+import PremiumDashboard from './pages/admin/PremiumDashboard';
+import AdvancedInvoiceForm from './pages/admin/AdvancedInvoiceForm';
+import InvoicePrintView from './pages/admin/InvoicePrintView';
 import { useAuth } from './context/AuthContext';
 
 import { ScrollToTop } from './components/ScrollToTop';
@@ -113,6 +116,29 @@ export default function App() {
               <Route path="/services" element={<Services />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
+
+            {/* ── Premium Admin Routes (standalone, no nested layout) ── */}
+            <Route path="/admin/premium-dashboard" element={<PremiumDashboard />} />
+            <Route path="/admin/advanced-invoice" element={<AdvancedInvoiceForm />} />
+            <Route path="/admin/invoice-print/:serial" element={<InvoicePrintView />} />
+            <Route path="/admin/invoice-print" element={<InvoicePrintView />} />
+            {/* Sidebar deep-link aliases → redirect to existing secure admin routes */}
+            <Route path="/admin/orders" element={<Navigate to="/admin-coldtech-secure/orders" replace />} />
+            <Route path="/admin/products" element={<Navigate to="/admin-coldtech-secure/products" replace />} />
+            <Route path="/admin/customers" element={<Navigate to="/admin-coldtech-secure/customers" replace />} />
+            <Route path="/admin/accounting-products" element={<Navigate to="/admin-coldtech-secure/accounting/products" replace />} />
+            <Route path="/admin/invoices" element={<Navigate to="/admin-coldtech-secure/invoices" replace />} />
+            <Route path="/admin/payments" element={<Navigate to="/admin-coldtech-secure/accounting/payments" replace />} />
+            <Route path="/admin/expenses" element={<Navigate to="/admin-coldtech-secure/expenses" replace />} />
+            <Route path="/admin/ledgers" element={<Navigate to="/admin-coldtech-secure/accounting/ledgers" replace />} />
+            <Route path="/admin/parties" element={<Navigate to="/admin-coldtech-secure/accounting/parties" replace />} />
+            <Route path="/admin/services" element={<Navigate to="/admin-coldtech-secure/services" replace />} />
+            <Route path="/admin/staff" element={<Navigate to="/admin-coldtech-secure/staff" replace />} />
+            <Route path="/admin/offers" element={<Navigate to="/admin-coldtech-secure/offers" replace />} />
+            <Route path="/admin/blog" element={<Navigate to="/admin-coldtech-secure/blog" replace />} />
+            <Route path="/admin/banners" element={<Navigate to="/admin-coldtech-secure/banners" replace />} />
+            <Route path="/admin/testimonials" element={<Navigate to="/admin-coldtech-secure/testimonials" replace />} />
+            <Route path="/admin/reports" element={<Navigate to="/admin-coldtech-secure/accounting/reports" replace />} />
 
             <Route path="/admin-coldtech-secure" element={<ModernAdminLayout />}>
               <Route index element={<IntelligentDashboard />} />
