@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin-coldtech-secure/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+
+# Block API routes from crawling
+Disallow: /api/
+
+Sitemap: https://coldtechtechnologies.in/sitemap.xml
