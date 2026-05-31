@@ -1,6 +1,6 @@
 {
+  "buildCommand": "npx --yes vite build",
   "installCommand": "npm install --legacy-peer-deps",
-
   "rewrites": [
     {
       "source": "/api/:path*",
@@ -11,7 +11,6 @@
       "destination": "/index.html"
     }
   ],
-
   "headers": [
     {
       "source": "/assets/:path*",
