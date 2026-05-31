@@ -9,7 +9,7 @@ import logo from "../assets/logo.png";
 const LINKS = [
   { to: "/",                 label: "Home" },
   { to: "/shop",             label: "Shop" },
-  { to: "/services/request", label: "Services" },
+  { to: "/services",         label: "Services" },
   { to: "/services/track",   label: "Track" },
   { to: "/blog",             label: "Blog" },
   { to: "/about",            label: "About" },

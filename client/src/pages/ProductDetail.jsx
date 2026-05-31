@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import { api } from "../services/api";
+import { SEO } from "../components/SEO";
 import { assetUrl } from "../utils/imageUrl";
 import { useCart } from "../context/CartContext";
 import { ProductCard } from "../components/ProductCard";
@@ -123,8 +124,47 @@ export function ProductDetail() {
     if (!isAuthenticated) { navigate("/login", { state: { from: { pathname: "/cart" } } }); return; }
     navigate("/cart");
   };
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description || product.name,
+    "image": images[0] ? assetUrl(images[0]) : undefined,
+    "brand": { "@type": "Brand", "name": product.brand || "Coldtech Technologies" },
+    "sku": product._id,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": effective,
+      "availability": inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "seller": { "@type": "Organization", "name": "Coldtech Technologies" },
+      "url": `https://coldtechtechnologies.in/products/${product._id}`,
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": rating,
+      "reviewCount": reviews,
+      "bestRating": "5",
+      "worstRating": "1",
+    },
+  };
+
   return (
     <div className="w-full bg-[var(--color-page)] pb-20 lg:pb-0">
+      <SEO
+        title={`${product.name}${product.brand ? ` — ${product.brand}` : ""} | Buy Online in Pune`}
+        description={`${product.description || product.name} Buy at ₹${effective.toLocaleString("en-IN")} from Coldtech Technologies, Pune. Free delivery, 30-day returns, genuine warranty.`}
+        keywords={`${product.name}, ${product.brand || ""}, buy laptop Pune, refurbished laptop Pune, ${product.category || "IT products"} Pune`}
+        canonical={`/products/${product._id}`}
+        ogType="product"
+        schema={productSchema}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Shop", url: "/shop" },
+          ...(product.category ? [{ name: product.category, url: `/shop?category=${encodeURIComponent(product.category)}` }] : []),
+          { name: product.name, url: `/products/${product._id}` },
+        ]}
+      />
 
       {/* Breadcrumb */}
       <div className="px-4 md:px-6 lg:px-12 pt-6 pb-2">

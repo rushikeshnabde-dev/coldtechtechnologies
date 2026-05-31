@@ -62,6 +62,42 @@
 .marquee-inner { animation: marquee 32s linear infinite; display:flex; width:max-content; }
 .marquee-inner:hover { animation-play-state: paused; }
 
+/* ── Trust ribbon strips ── */
+.strip-ribbon {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+.strip-item-text {
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  padding: 9px 18px;
+  white-space: nowrap;
+}
+.strip-item-sep {
+  color: rgba(255,255,255,0.45);
+  font-size: 16px;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+@media (min-width: 640px) {
+  .strip-item-text { font-size: 15px; padding: 10px 22px; }
+  .strip-item-sep  { font-size: 18px; }
+}
+@media (min-width: 1024px) {
+  .strip-item-text { font-size: 17px; padding: 11px 26px; }
+  .strip-item-sep  { font-size: 20px; }
+}
+@media (min-width: 1280px) {
+  .strip-item-text { font-size: 18px; padding: 12px 30px; }
+  .strip-item-sep  { font-size: 22px; }
+}
+
 /* ── Float ── */
 @keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 .float { animation: floatY 5s ease-in-out infinite; }

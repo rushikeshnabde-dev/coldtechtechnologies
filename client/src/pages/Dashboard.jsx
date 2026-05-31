@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SEO } from "../components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
@@ -221,6 +222,7 @@ export function Dashboard() {
 
   return (
     <div className="w-full min-h-screen" style={{ background:"#F8FAFC" }}>
+      <SEO title="My Dashboard" description="Manage your orders and service requests." canonical="/dashboard" noIndex={true} />
 
       {/* Header */}
       <div className="py-10 px-6 md:px-10 lg:px-16"

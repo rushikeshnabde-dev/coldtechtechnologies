@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+import { SEO } from "../components/SEO";
 import { describeAxiosNetworkFailure } from "../utils/networkErrorMessage";
 import { FiUser, FiMail, FiPhone, FiLock, FiEye, FiEyeOff, FiUserPlus } from "react-icons/fi";
 import logo from "../assets/logo.png";
@@ -48,6 +49,7 @@ export function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background:"linear-gradient(135deg,#F0FDF4 0%,#E0F2FE 50%,#F8FAFC 100%)" }}>
+      <SEO title="Create Account" description="Create your Coldtech Technologies account." canonical="/register" noIndex={true} />
       <motion.div initial={{ opacity:0, y:24, scale:.97 }} animate={{ opacity:1, y:0, scale:1 }}
         transition={{ duration:.5 }} className="w-full max-w-md">
         <div className="p-px rounded-3xl shadow-2xl" style={{ background:"linear-gradient(135deg,#10B981,#0EA5E9,#1E293B)" }}>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiCalendar, FiEye, FiArrowLeft, FiTag } from "react-icons/fi";
+import { FiCalendar, FiEye, FiArrowLeft, FiTag, FiClock } from "react-icons/fi";
 import { api } from "../services/api";
 import { SEO } from "../components/SEO";
+import { STATIC_BLOGS } from "../data/staticBlogs";
 
 const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80";
 
@@ -22,7 +23,11 @@ export function BlogPost() {
     setLoading(true);
     api.get(`/blog/${slug}`)
       .then(r => setPost(r.data.post))
-      .catch(() => setError(true))
+      .catch(() => {
+        const staticPost = STATIC_BLOGS.find(b => b.slug === slug);
+        if (staticPost) setPost(staticPost);
+        else setError(true);
+      })
       .finally(() => setLoading(false));
   }, [slug]);
 
@@ -45,9 +50,32 @@ export function BlogPost() {
       <SEO
         title={post.title}
         description={post.excerpt || post.title}
+        keywords={post.tags?.join(", ") || "IT blog Pune, tech tips, laptop repair guide"}
         canonical={`/blog/${post.slug}`}
         ogType="article"
         ogImage={post.coverImage || PLACEHOLDER_IMG}
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "Blog", url: "/blog" },
+          { name: post.title, url: `/blog/${post.slug}` },
+        ]}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": post.title,
+          "description": post.excerpt || post.title,
+          "image": post.coverImage || PLACEHOLDER_IMG,
+          "datePublished": post.createdAt,
+          "dateModified": post.updatedAt || post.createdAt,
+          "author": { "@type": "Organization", "name": "Coldtech Technologies", "url": "https://coldtechtechnologies.in" },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Coldtech Technologies",
+            "logo": { "@type": "ImageObject", "url": "https://coldtechtechnologies.in/og-image.png" },
+          },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": `https://coldtechtechnologies.in/blog/${post.slug}` },
+          ...(post.tags?.length ? { "keywords": post.tags.join(", ") } : {}),
+        }}
       />
 
       {/* Cover */}

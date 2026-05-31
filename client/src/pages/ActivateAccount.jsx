@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { SEO } from "../components/SEO";
 import { FiLock, FiEye, FiEyeOff, FiCheckCircle } from "react-icons/fi";
 import { api } from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -50,6 +51,7 @@ export function ActivateAccount() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12"
       style={{ background: "linear-gradient(135deg,#EBF6FF 0%,#dbeafe 50%,#F8FAFC 100%)" }}>
+      <SEO title="Activate Account" description="Activate your Coldtech Technologies account." canonical="/activate" noIndex={true} />
       <motion.div initial={{ opacity:0, y:24 }} animate={{ opacity:1, y:0 }} transition={{ duration:.5 }}
         className="w-full max-w-md">
         <div className="p-px rounded-3xl shadow-2xl" style={{ background:"linear-gradient(135deg,#3AB6FF,#2B0FA8)" }}>

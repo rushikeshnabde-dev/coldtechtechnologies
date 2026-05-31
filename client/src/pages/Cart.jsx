@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { SEO } from "../components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import {
@@ -175,6 +176,7 @@ export function Cart() {
 
   return (
     <div className="w-full bg-[var(--color-page)] min-h-screen">
+      <SEO title="Your Cart" description="Review your cart and checkout." canonical="/cart" noIndex={true} />
       <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8 py-8">
 
         {/* Header */}

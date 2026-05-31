@@ -1,11 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiCalendar, FiUser, FiEye, FiArrowRight, FiTag } from "react-icons/fi";
+import { FiCalendar, FiUser, FiEye, FiArrowRight, FiTag, FiClock } from "react-icons/fi";
 import { api } from "../services/api";
 import { SEO } from "../components/SEO";
+import { STATIC_BLOGS } from "../data/staticBlogs";
 
 const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80";
+
+const CATEGORY_COLORS = {
+  Laptop:        { bg: "#EFF6FF", color: "#2563EB" },
+  Network:       { bg: "#ECFDF5", color: "#059669" },
+  Upgrade:       { bg: "#FFF7ED", color: "#EA580C" },
+  "Data Recovery": { bg: "#FEF3C7", color: "#D97706" },
+  Security:      { bg: "#FDF4FF", color: "#9333EA" },
+  PC:            { bg: "#F0F9FF", color: "#0284C7" },
+  General:       { bg: "#F8FAFC", color: "#475569" },
+};
+
+function readTime(content = "") {
+  const words = content.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 200))} min read`;
+}
 
 function fmtDate(d) {
   return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
@@ -20,18 +36,37 @@ export function Blog() {
   useEffect(() => {
     setLoading(true);
     api.get("/blog", { params: { page, limit: 9 } })
-      .then(r => { setPosts(r.data.posts || []); setPages(r.data.pages || 1); })
-      .catch(() => setPosts([]))
+      .then(r => {
+        const apiPosts = r.data.posts || [];
+        setPosts(apiPosts.length > 0 ? apiPosts : STATIC_BLOGS);
+        setPages(r.data.pages || 1);
+      })
+      .catch(() => setPosts(STATIC_BLOGS))
       .finally(() => setLoading(false));
   }, [page]);
 
   return (
     <div className="w-full bg-[var(--color-page)] min-h-screen">
       <SEO
-        title="Blog — IT Tips & Insights"
-        description="Read the latest IT tips, cloud migration guides, cybersecurity advice, and tech insights from Coldtech Technologies, Pune."
-        keywords="IT blog Pune, tech tips India, cybersecurity blog, cloud migration guide, IT solutions blog"
+        title="IT Tips, Tech Guides & Insights Blog — Coldtech Technologies Pune"
+        description="Read the latest laptop repair tips, data recovery guides, cybersecurity advice, and IT insights from Coldtech Technologies — Pune's trusted IT service provider."
+        keywords="IT blog Pune, laptop repair tips, data recovery guide, cybersecurity tips India, tech blog Pune, IT solutions blog, computer repair advice"
         canonical="/blog"
+        breadcrumbs={[{ name: "Home", url: "/" }, { name: "Blog", url: "/blog" }]}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Blog",
+          "name": "Coldtech Technologies Blog",
+          "description": "IT tips, tech guides, laptop repair advice and cybersecurity insights from Coldtech Technologies, Pune.",
+          "url": "https://coldtechtechnologies.in/blog",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Coldtech Technologies",
+            "url": "https://coldtechtechnologies.in",
+            "logo": { "@type": "ImageObject", "url": "https://coldtechtechnologies.in/og-image.png" },
+          },
+          "inLanguage": "en-IN",
+        }}
       />
 
       {/* Hero */}
@@ -74,65 +109,84 @@ export function Blog() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post, i) => (
-                <motion.article key={post._id}
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-                  className="rounded-2xl bg-white border border-slate-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                  {/* Cover */}
-                  <Link to={`/blog/${post.slug}`} className="block overflow-hidden h-48 bg-slate-100 flex-shrink-0">
-                    <img
-                      src={post.coverImage || PLACEHOLDER_IMG}
-                      alt={post.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                      onError={e => { e.target.src = PLACEHOLDER_IMG; }}
-                    />
-                  </Link>
+              {posts.map((post, i) => {
+                const catStyle = CATEGORY_COLORS[post.category] || CATEGORY_COLORS.General;
+                return (
+                  <motion.article key={post._id}
+                    initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }} transition={{ delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                    whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                    className="group rounded-2xl bg-white border border-slate-200 overflow-hidden flex flex-col"
+                    style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.04)" }}>
 
-                  <div className="p-5 flex flex-col flex-1">
-                    {/* Category */}
-                    {post.category && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest mb-3 px-2.5 py-1 rounded-full w-fit"
-                        style={{ background: "rgba(58,182,255,0.1)", color: "#3AB6FF" }}>
-                        <FiTag className="w-3 h-3" /> {post.category}
-                      </span>
-                    )}
-
-                    {/* Title */}
-                    <Link to={`/blog/${post.slug}`}>
-                      <h2 className="font-bold text-slate-900 text-base leading-snug mb-2 hover:text-sky-600 transition line-clamp-2">
-                        {post.title}
-                      </h2>
+                    {/* Cover image */}
+                    <Link to={`/blog/${post.slug}`} className="block relative overflow-hidden h-48 bg-slate-100 flex-shrink-0">
+                      <img
+                        src={post.coverImage || PLACEHOLDER_IMG}
+                        alt={post.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        onError={e => { e.target.src = PLACEHOLDER_IMG; }}
+                      />
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      {/* Read now pill on hover */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <span className="flex items-center gap-1.5 bg-white text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+                          Read Article <FiArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
                     </Link>
 
-                    {/* Excerpt */}
-                    {post.excerpt && (
-                      <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-4 flex-1">
-                        {post.excerpt}
-                      </p>
-                    )}
-
-                    {/* Meta */}
-                    <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
-                      <div className="flex items-center gap-3 text-xs text-slate-400">
-                        <span className="flex items-center gap-1">
-                          <FiCalendar className="w-3 h-3" /> {fmtDate(post.createdAt)}
-                        </span>
-                        {post.author?.name && (
-                          <span className="flex items-center gap-1">
-                            <FiUser className="w-3 h-3" /> {post.author.name}
+                    <div className="p-5 flex flex-col flex-1">
+                      {/* Category + read time */}
+                      <div className="flex items-center justify-between mb-3">
+                        {post.category && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                            style={{ background: catStyle.bg, color: catStyle.color }}>
+                            <FiTag className="w-3 h-3" /> {post.category}
                           </span>
                         )}
+                        <span className="flex items-center gap-1 text-[10px] text-slate-400 font-medium">
+                          <FiClock className="w-3 h-3" /> {readTime(post.content || post.excerpt)}
+                        </span>
                       </div>
-                      <Link to={`/blog/${post.slug}`}
-                        className="flex items-center gap-1 text-xs font-bold text-sky-500 hover:text-sky-700 transition">
-                        Read <FiArrowRight className="w-3 h-3" />
+
+                      {/* Title */}
+                      <Link to={`/blog/${post.slug}`}>
+                        <h2 className="font-bold text-slate-900 text-base leading-snug mb-2 group-hover:text-sky-600 transition-colors line-clamp-2">
+                          {post.title}
+                        </h2>
                       </Link>
+
+                      {/* Excerpt */}
+                      {post.excerpt && (
+                        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 mb-4 flex-1">
+                          {post.excerpt}
+                        </p>
+                      )}
+
+                      {/* Meta row */}
+                      <div className="flex items-center justify-between mt-auto pt-3 border-t border-slate-100">
+                        <div className="flex items-center gap-3 text-xs text-slate-400">
+                          <span className="flex items-center gap-1">
+                            <FiCalendar className="w-3 h-3" /> {fmtDate(post.createdAt)}
+                          </span>
+                          {post.views > 0 && (
+                            <span className="flex items-center gap-1">
+                              <FiEye className="w-3 h-3" /> {post.views.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                        <Link to={`/blog/${post.slug}`}
+                          className="flex items-center gap-1 text-xs font-bold text-sky-500 hover:text-sky-700 transition-colors">
+                          Read <FiArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </motion.article>
-              ))}
+                  </motion.article>
+                );
+              })}
             </div>
           )}
 

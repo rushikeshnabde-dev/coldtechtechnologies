@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import { SEO } from "../components/SEO";
 import { FiMail, FiArrowLeft, FiSend, FiCheckCircle } from "react-icons/fi";
 
 function Orb({ style }) {
@@ -43,6 +44,7 @@ export function ForgotPassword() {
   return (
     <div className="relative w-full min-h-[calc(100vh-64px)] flex items-center justify-center px-4 py-12 overflow-hidden"
       style={{ background: "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0fdf4 100%)" }}>
+      <SEO title="Reset Password" description="Reset your Coldtech Technologies account password." canonical="/forgot-password" noIndex={true} />
       {ORBS.map((s, i) => <Orb key={i} style={s} />)}
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle, #1A2C3E 1px, transparent 1px)", backgroundSize: "28px 28px" }} />

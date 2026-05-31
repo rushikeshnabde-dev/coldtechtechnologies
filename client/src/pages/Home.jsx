@@ -2,14 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
-  FiArrowRight, FiChevronDown, FiCheck, FiMessageCircle,
+  FiArrowRight, FiChevronDown, FiCheck,
   FiWifi, FiDownload, FiUsers, FiClock,
   FiChevronLeft, FiChevronRight, FiShield, FiStar, FiTrendingUp,
 } from "react-icons/fi";
 import { FaLaptop, FaWrench, FaDatabase, FaWhatsapp } from "react-icons/fa";
 import { api } from "../services/api";
 import { SEO } from "../components/SEO";
-import { BannerCarousel } from "../components/BannerCarousel";
 
 /* ─── static data ─── */
 const SERVICES = [
@@ -132,42 +131,68 @@ const PRICING_PILLARS = [
 ];
 
 const TRUST_STATS = [
-  { value: "2,500+", label: "Devices Repaired",  icon: FaLaptop },
+  { value: "2,500+", label: "Devices Repaired",     icon: FaLaptop },
   { value: "98%",    label: "Customer Satisfaction", icon: FiStar },
-  { value: "30-Day", label: "Repair Warranty",   icon: FiShield },
-  { value: "< 4hrs", label: "Avg Response Time", icon: FiClock },
-  { value: "5+",     label: "Years Experience",  icon: FiTrendingUp },
+  { value: "30-Day", label: "Repair Warranty",       icon: FiShield },
+  { value: "< 4hrs", label: "Avg Response Time",     icon: FiClock },
+  { value: "5+",     label: "Years Experience",      icon: FiTrendingUp },
 ];
+
+const MARQUEE_ROW1 = [
+  { icon: "💻", text: "2,500+ Devices Repaired",    color: "#0EA5E9" },
+  { icon: "⭐", text: "4.9 / 5 Customer Rating",   color: "#F59E0B" },
+  { icon: "🔒", text: "30-Day Repair Warranty",     color: "#8B5CF6" },
+  { icon: "⚡", text: "< 4hrs Response Time",       color: "#F59E0B" },
+  { icon: "🏆", text: "5+ Years of Experience",     color: "#10B981" },
+  { icon: "📍", text: "Serving Pune & PCMC",        color: "#0EA5E9" },
+  { icon: "🔧", text: "Certified Technicians",      color: "#06B6D4" },
+  { icon: "📊", text: "98% Satisfaction Rate",      color: "#10B981" },
+];
+
+const MARQUEE_ROW2 = [
+  { icon: "✅", text: "Free Diagnosis — Always",    color: "#10B981" },
+  { icon: "🚀", text: "Same-Day Repairs Available", color: "#EF4444" },
+  { icon: "🏠", text: "Free Pickup & Delivery",     color: "#0EA5E9" },
+  { icon: "💳", text: "Pay After Service Done",     color: "#8B5CF6" },
+  { icon: "📱", text: "All Brands Supported",       color: "#06B6D4" },
+  { icon: "🛡️", text: "Your Data is Safe",          color: "#8B5CF6" },
+  { icon: "💰", text: "Transparent Pricing",        color: "#F59E0B" },
+  { icon: "🤝", text: "Trusted by 2500+ Customers", color: "#10B981" },
+];
+
+const HERO_STATS = [
+  { value: "2,500+", label: "Devices Fixed",   color: "#0EA5E9", icon: "💻" },
+  { value: "98%",    label: "Satisfaction",    color: "#10B981", icon: "⭐" },
+  { value: "< 4hrs", label: "Response Time",  color: "#8B5CF6", icon: "⚡" },
+  { value: "5+ Yrs", label: "Experience",     color: "#F59E0B", icon: "🏆" },
+];
+
+const TYPED_WORDS = ["IT Repair", "Data Recovery", "Network Setup", "IT Support", "Optimization"];
 
 /* ─── animation variants ─── */
 const fadeUp = {
   hidden:  { opacity: 0, y: 32 },
-  visible: (d = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.55, delay: d, ease: "easeOut" } }),
+  visible: (d = 0) => ({ opacity: 1, y: 0, transition: { duration: 0.6, delay: d, ease: [0.22, 1, 0.36, 1] } }),
 };
 
 const fadeLeft = {
   hidden:  { opacity: 0, x: -36 },
-  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.55, delay: d, ease: "easeOut" } }),
+  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.6, delay: d, ease: [0.22, 1, 0.36, 1] } }),
 };
 
 const fadeRight = {
   hidden:  { opacity: 0, x: 36 },
-  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.55, delay: d, ease: "easeOut" } }),
+  visible: (d = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.6, delay: d, ease: [0.22, 1, 0.36, 1] } }),
 };
 
 const scaleIn = {
-  hidden:  { opacity: 0, scale: 0.88 },
-  visible: (d = 0) => ({ opacity: 1, scale: 1, transition: { duration: 0.5, delay: d, ease: [0.25, 0.46, 0.45, 0.94] } }),
+  hidden:  { opacity: 0, scale: 0.9 },
+  visible: (d = 0) => ({ opacity: 1, scale: 1, transition: { duration: 0.5, delay: d, ease: [0.34, 1.56, 0.64, 1] } }),
 };
 
 const stagger = {
   hidden:  {},
   visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const staggerFast = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.07 } },
 };
 
 /* ─── reusable reveal helpers ─── */
@@ -229,8 +254,9 @@ function StaggerContainer({ children, className = "" }) {
 function SectionLabel({ text, color = "#0EA5E9" }) {
   return (
     <motion.span variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-      className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
+      className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold mb-4 uppercase tracking-widest"
       style={{ background: color + "18", color, border: `1px solid ${color}33` }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
       {text}
     </motion.span>
   );
@@ -240,19 +266,25 @@ function FaqItem({ q, a }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-      className="card overflow-hidden">
+      className="overflow-hidden rounded-2xl transition-all duration-200"
+      style={{
+        background: open ? "#fff" : "#F8FAFC",
+        border: `1.5px solid ${open ? "rgba(14,165,233,0.3)" : "#E2E8F0"}`,
+        boxShadow: open ? "0 8px 32px rgba(14,165,233,0.08)" : "none",
+      }}>
       <button onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-6 py-5 text-left text-sm font-semibold text-slate-800 hover:text-sky-600 transition-colors">
-        {q}
-        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.22 }}>
-          <FiChevronDown className="w-4 h-4 flex-shrink-0 text-slate-400" />
+        className="w-full flex items-center justify-between px-6 py-5 text-left text-sm font-semibold text-slate-800 hover:text-sky-600 transition-colors gap-4">
+        <span>{q}</span>
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="flex-shrink-0">
+          <FiChevronDown className="w-4 h-4 text-slate-400" />
         </motion.span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
           <motion.div key="body" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
-            <p className="px-6 pb-5 text-sm text-slate-500 leading-relaxed">{a}</p>
+            exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.28, ease: "easeInOut" }} className="overflow-hidden">
+            <p className="px-6 pb-5 text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-3">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -270,248 +302,609 @@ function Shimmer({ className = "" }) {
   );
 }
 
+/* ─── MarqueeItem ─── */
+function MarqueeItem({ item }) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.06, y: -2 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="flex items-center gap-2.5 mx-3 px-4 py-2 rounded-full flex-shrink-0 cursor-default select-none"
+      style={{ background: item.color + "12", border: `1px solid ${item.color}28` }}>
+      <span className="text-base leading-none">{item.icon}</span>
+      <span className="text-xs font-bold whitespace-nowrap" style={{ color: item.color }}>{item.text}</span>
+    </motion.div>
+  );
+}
+
+/* ─── AnimatedCounter ─── */
+function AnimatedCounter({ value }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const [count, setCount] = useState(0);
+
+  const match = value.match(/^([^0-9]*)([0-9,]+)(.*)$/);
+  const num = match ? parseInt(match[2].replace(/,/g, ""), 10) : 0;
+
+  useEffect(() => {
+    if (!inView || !match) return;
+    const duration = 1500;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setCount(Math.round(eased * num));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [inView]);
+
+  if (!match) return <span ref={ref}>{value}</span>;
+  const display = count >= 1000 ? count.toLocaleString() : String(count);
+  return <span ref={ref}>{match[1]}{display}{match[3]}</span>;
+}
+
+/* ─── TypedText ─── */
+function TypedText() {
+  const [idx, setIdx] = useState(0);
+  const [display, setDisplay] = useState("");
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = TYPED_WORDS[idx];
+    let t;
+    if (!deleting && display.length < word.length) {
+      t = setTimeout(() => setDisplay(word.slice(0, display.length + 1)), 80);
+    } else if (!deleting && display.length === word.length) {
+      t = setTimeout(() => setDeleting(true), 2200);
+    } else if (deleting && display.length > 0) {
+      t = setTimeout(() => setDisplay(d => d.slice(0, -1)), 45);
+    } else if (deleting && display.length === 0) {
+      setDeleting(false);
+      setIdx(i => (i + 1) % TYPED_WORDS.length);
+    }
+    return () => clearTimeout(t);
+  }, [display, deleting, idx]);
+
+  return (
+    <span className="grad-anim inline-block"
+      style={{ backgroundImage: "linear-gradient(135deg,#38BDF8,#0EA5E9,#4FD1C5,#38BDF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", backgroundSize: "300% 300%" }}>
+      {display}
+      <motion.span animate={{ opacity: [1, 0, 1] }} transition={{ duration: 0.8, repeat: Infinity }}
+        style={{ WebkitTextFillColor: "#38BDF8", marginLeft: "2px" }}>|</motion.span>
+    </span>
+  );
+}
+
+/* ─── HeroCard ─── */
+function HeroCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 50, y: 20 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+      className="hidden lg:flex items-center justify-center relative py-8">
+
+      {/* Central glow */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at 60% 50%, rgba(14,165,233,0.15) 0%, transparent 65%)" }} />
+
+      {/* Main floating card */}
+      <motion.div
+        animate={{ y: [0, -14, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="relative rounded-3xl p-6 w-80 z-10"
+        style={{
+          background: "rgba(255,255,255,0.07)",
+          border: "1px solid rgba(255,255,255,0.13)",
+          backdropFilter: "blur(24px)",
+          boxShadow: "0 32px 72px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.12)",
+        }}>
+
+        {/* Card header */}
+        <div className="flex items-center gap-3 mb-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <motion.div
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+            style={{ background: "linear-gradient(135deg,#0EA5E9,#0284C7)" }}>
+            🖥️
+          </motion.div>
+          <div>
+            <p className="text-white font-bold text-sm leading-tight">Coldtech Technologies</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <motion.div className="w-1.5 h-1.5 rounded-full bg-emerald-400"
+                animate={{ scale: [1, 1.6, 1], opacity: [1, 0.4, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }} />
+              <p className="text-emerald-400 text-[11px] font-semibold">Open · Available Now</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 gap-2.5 mb-4">
+          {HERO_STATS.map((s, i) => (
+            <motion.div key={i}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6 + i * 0.1, type: "spring", stiffness: 220, damping: 18 }}
+              className="rounded-2xl p-3"
+              style={{ background: `${s.color}18`, border: `1px solid ${s.color}28` }}>
+              <div className="text-base mb-1">{s.icon}</div>
+              <p className="text-white font-black text-base leading-none">{s.value}</p>
+              <p className="text-[11px] mt-0.5 font-semibold" style={{ color: s.color }}>{s.label}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA row */}
+        <motion.div
+          className="flex items-center gap-3 p-3 rounded-2xl cursor-pointer"
+          style={{ background: "rgba(14,165,233,0.1)", border: "1px solid rgba(14,165,233,0.2)" }}
+          whileHover={{ background: "rgba(14,165,233,0.16)" }}>
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0"
+            style={{ background: "rgba(14,165,233,0.2)" }}>🔧</div>
+          <div className="flex-1 min-w-0">
+            <p className="text-white text-xs font-bold">Free Diagnosis</p>
+            <p className="text-slate-400 text-[10px]">No charge to check your device</p>
+          </div>
+          <FiArrowRight className="w-4 h-4 text-sky-400 flex-shrink-0" />
+        </motion.div>
+      </motion.div>
+
+      {[
+        { label: "30-Day Warranty",  icon: "✓",  color: "16,185,129",  pos: "left-0 top-10",                         ix: -20, iy: 0,   dur: 3.8, delay: 0.0 },
+        { label: "Same-Day Repairs", icon: "🚀", color: "139,92,246",  pos: "right-2 bottom-10",                     ix:  20, iy: 0,   dur: 4.2, delay: 0.5 },
+        { label: "4.9 / 5 Rating",   icon: "⭐", color: "245,158,11",  pos: "right-0 top-16",                        ix:  20, iy: 0,   dur: 3.5, delay: 1.0 },
+        { label: "Free Pickup",      icon: "🚗", color: "14,165,233",  pos: "left-0 bottom-10",                      ix: -20, iy: 0,   dur: 4.6, delay: 1.4 },
+        { label: "Certified Techs",  icon: "🔧", color: "6,182,212",   pos: "left-0 top-1/2 -translate-y-1/2",      ix: -20, iy: 0,   dur: 4.0, delay: 0.7 },
+        { label: "No Fix, No Fee",   icon: "🛡️", color: "239,68,68",   pos: "right-0 bottom-28",                     ix:  20, iy: 0,   dur: 4.4, delay: 1.8 },
+        { label: "All Brands",       icon: "💻", color: "139,92,246",  pos: "left-1/2 -translate-x-1/2 top-2",      ix:  0,  iy: -16, dur: 3.6, delay: 0.3 },
+        { label: "Fast Response",    icon: "⚡", color: "16,185,129",  pos: "left-1/2 -translate-x-1/2 bottom-2",   ix:  0,  iy: 0,   dur: 4.8, delay: 2.1 },
+      ].map(({ label, icon, color, pos, ix, iy, dur, delay }) => (
+        <motion.div key={label}
+          initial={{ opacity: 0, x: ix, y: iy }}
+          animate={{ opacity: 1, x: 0, y: [0, -8, 0] }}
+          transition={{
+            opacity: { delay, duration: 0.5 },
+            x:       { delay, duration: 0.5 },
+            y:       { duration: dur, repeat: Infinity, ease: "easeInOut", delay: 0 },
+          }}
+          className={`absolute ${pos} flex items-center gap-2 px-4 py-2.5 rounded-2xl z-20`}
+          style={{ background: `rgba(${color},0.18)`, border: `1px solid rgba(${color},0.38)`, backdropFilter: "blur(16px)" }}>
+          <span className="text-sm leading-none">{icon}</span>
+          <span className="text-white text-xs font-bold whitespace-nowrap">{label}</span>
+        </motion.div>
+      ))}
+
+      {/* Decorative ring */}
+      <motion.div
+        className="absolute w-80 h-80 rounded-full pointer-events-none z-0"
+        style={{ border: "1px solid rgba(14,165,233,0.12)" }}
+        animate={{ scale: [1, 1.06, 1], opacity: [0.5, 0.9, 0.5] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+      <motion.div
+        className="absolute w-96 h-96 rounded-full pointer-events-none z-0"
+        style={{ border: "1px solid rgba(14,165,233,0.07)" }}
+        animate={{ scale: [1, 1.04, 1], opacity: [0.3, 0.6, 0.3] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }} />
+
+    </motion.div>
+  );
+}
+
 /* ─── HowItWorksPanel ─── */
-function HowItWorksPanel() {
+function HowItWorksTimeline() {
   const [active, setActive] = useState(0);
   const s = STEPS[active];
 
+  useEffect(() => {
+    const id = setTimeout(() => setActive(i => (i + 1) % STEPS.length), 4500);
+    return () => clearTimeout(id);
+  }, [active]);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
-      <div className="lg:col-span-2 flex flex-row lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0"
-        style={{ scrollbarWidth: "none" }}>
-        {STEPS.map((step, i) => {
+    <div className="space-y-8">
+
+      {/* ── Step cards with inline chevron arrows — no connecting lines ── */}
+      <div className="flex items-stretch gap-1 sm:gap-2">
+        {STEPS.flatMap((step, i) => {
           const isActive = i === active;
-          return (
-            <motion.button key={i} onClick={() => setActive(i)}
-              className="flex-shrink-0 lg:flex-shrink flex items-center gap-4 p-4 rounded-2xl text-left w-48 lg:w-full transition-all duration-200 relative overflow-hidden"
+          const isDone = i < active;
+
+          const card = (
+            <motion.button
+              key={`step-${i}`}
+              onClick={() => setActive(i)}
+              className="flex-1 flex flex-col items-center gap-2 sm:gap-3 p-2 sm:p-4 rounded-xl sm:rounded-2xl cursor-pointer relative overflow-hidden"
               style={{
-                background: isActive ? step.color + "12" : "#F8FAFC",
-                border: `1.5px solid ${isActive ? step.color + "55" : "#E2E8F0"}`,
+                background: isActive ? step.color + "0d" : isDone ? "#FAFBFC" : "#fff",
+                border: `2px solid ${isActive ? step.color : isDone ? step.color + "35" : "#E8ECEF"}`,
+                boxShadow: isActive ? `0 6px 24px ${step.color}22` : "0 1px 4px rgba(0,0,0,0.05)",
               }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}>
-              {isActive && (
-                <motion.div layoutId="stepBar"
-                  className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-                  style={{ background: step.color }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }} />
-              )}
-              <div className="w-11 h-11 rounded-xl flex flex-col items-center justify-center flex-shrink-0 gap-0.5 transition-all"
-                style={{ background: isActive ? step.color : "#E2E8F0" }}>
-                <span className="text-[9px] font-black leading-none" style={{ color: isActive ? "rgba(255,255,255,0.75)" : "#94A3B8" }}>
-                  {step.n}
-                </span>
-                <step.icon className="w-4 h-4" style={{ color: isActive ? "#fff" : "#94A3B8" }} />
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}>
+
+              {/* Circle with icon */}
+              <div className="relative">
+                <motion.div
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center relative z-10"
+                  style={{
+                    background: isActive ? step.color : isDone ? step.color + "28" : "#F1F5F9",
+                    boxShadow: isActive ? `0 8px 28px ${step.color}50` : "none",
+                  }}
+                  animate={isActive ? { scale: [1, 1.07, 1] } : { scale: 1 }}
+                  transition={{ duration: 2.8, repeat: isActive ? Infinity : 0 }}>
+                  {isDone
+                    ? <FiCheck className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: step.color }} />
+                    : <step.icon className="w-4 h-4 sm:w-6 sm:h-6" style={{ color: isActive ? "#fff" : "#94A3B8" }} />
+                  }
+                  {isActive && (
+                    <motion.div className="absolute inset-0 rounded-full pointer-events-none"
+                      style={{ background: step.color }}
+                      animate={{ scale: [1, 1.9], opacity: [0.3, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }} />
+                  )}
+                </motion.div>
+                {/* Badge */}
+                <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black z-20 shadow"
+                  style={{
+                    background: isDone ? "#10B981" : isActive ? step.color : "#E2E8F0",
+                    color: isDone || isActive ? "#fff" : "#94A3B8",
+                  }}>
+                  {isDone ? "✓" : i + 1}
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="font-bold text-sm leading-tight truncate"
-                  style={{ color: isActive ? step.color : "#334155" }}>
+
+              <div className="text-center">
+                <p className="font-bold text-[10px] sm:text-[13px] leading-tight"
+                  style={{ color: isActive ? step.color : isDone ? "#64748B" : "#334155" }}>
                   {step.title}
                 </p>
-                <p className="text-xs mt-0.5 truncate" style={{ color: isActive ? step.color + "aa" : "#94A3B8" }}>
+                <p className="text-[9px] sm:text-[11px] mt-0.5 hidden sm:block"
+                  style={{ color: isActive ? step.color + "bb" : "#94A3B8" }}>
                   {step.tagline}
                 </p>
               </div>
+
+              {isActive && (
+                <div className="w-full h-[3px] rounded-full bg-slate-100 overflow-hidden">
+                  <motion.div key={`prog-${active}`} className="h-full rounded-full"
+                    style={{ background: step.color }}
+                    initial={{ width: "0%" }} animate={{ width: "100%" }}
+                    transition={{ duration: 4.5, ease: "linear" }} />
+                </div>
+              )}
             </motion.button>
+          );
+
+          const arrow = i < STEPS.length - 1 ? (
+            <div key={`arrow-${i}`} className="flex-shrink-0 flex items-center self-center pb-4 sm:pb-6">
+              <FiChevronRight className="w-3 h-3 sm:w-4 sm:h-4"
+                style={{ color: isDone ? step.color + "80" : "#CBD5E1" }} />
+            </div>
+          ) : null;
+
+          return arrow ? [card, arrow] : [card];
+        })}
+      </div>
+
+      {/* ── Detail card ── */}
+      <AnimatePresence mode="wait">
+        <motion.div key={active}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -16 }}
+          transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+          className="rounded-3xl overflow-hidden"
+          style={{ border: `1.5px solid ${s.color}30`, background: "#fff", boxShadow: `0 20px 60px ${s.color}14` }}>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr]">
+
+            {/* Left: accent column */}
+            <div className="relative px-8 py-8 overflow-hidden flex flex-col gap-5 min-h-[220px]"
+              style={{ background: `linear-gradient(145deg, ${s.color}16, ${s.color}07)` }}>
+
+              {/* Decorative blobs */}
+              <motion.div className="absolute -left-10 -bottom-10 w-48 h-48 rounded-full pointer-events-none opacity-20"
+                style={{ background: s.color }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.div className="absolute right-0 top-4 w-20 h-20 rounded-full pointer-events-none opacity-10"
+                style={{ background: s.color }}
+                animate={{ scale: [1, 1.5, 1] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+              {/* Giant watermark number */}
+              <div className="absolute -right-2 -bottom-4 font-black leading-none select-none pointer-events-none"
+                style={{ fontSize: "9rem", color: s.color, opacity: 0.06 }}>
+                {s.n}
+              </div>
+
+              {/* Rotating icon */}
+              <motion.div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10 self-start"
+                style={{ background: s.color, boxShadow: `0 12px 32px ${s.color}55` }}
+                animate={{ rotate: [0, 4, -4, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}>
+                <s.icon className="w-7 h-7 text-white" />
+              </motion.div>
+
+              <div className="relative z-10">
+                <p className="font-black text-5xl leading-none mb-1" style={{ color: s.color + "40" }}>
+                  {s.n}
+                </p>
+                <h3 className="font-black text-slate-900 text-2xl leading-tight">{s.title}</h3>
+                <p className="text-sm font-semibold mt-1" style={{ color: s.color }}>{s.tagline}</p>
+              </div>
+
+              {/* Nav controls */}
+              <div className="flex items-center gap-3 relative z-10 mt-auto">
+                <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }}
+                  onClick={() => setActive(i => Math.max(0, i - 1))}
+                  disabled={active === 0}
+                  className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:border-sky-400 hover:text-sky-500 disabled:opacity-30 transition shadow-sm">
+                  <FiChevronLeft className="w-4 h-4" />
+                </motion.button>
+                <div className="flex gap-1.5">
+                  {STEPS.map((_, i) => (
+                    <motion.button key={i} onClick={() => setActive(i)}
+                      className="rounded-full" style={{ height: 5 }}
+                      animate={{ width: i === active ? "18px" : "5px", background: i === active ? s.color : "#CBD5E1" }}
+                      transition={{ duration: 0.3 }} />
+                  ))}
+                </div>
+                <motion.button whileHover={{ scale: 1.12 }} whileTap={{ scale: 0.9 }}
+                  onClick={() => setActive(i => Math.min(STEPS.length - 1, i + 1))}
+                  disabled={active === STEPS.length - 1}
+                  className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:border-sky-400 hover:text-sky-500 disabled:opacity-30 transition shadow-sm">
+                  <FiChevronRight className="w-4 h-4" />
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Right: content */}
+            <div className="px-8 py-8 flex flex-col justify-between">
+              <div>
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">{s.desc}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
+                  {s.details.map((d, j) => (
+                    <motion.div key={`${active}-${j}`}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: j * 0.09, ease: [0.22, 1, 0.36, 1] }}
+                      className="flex items-center gap-3 p-3 rounded-xl"
+                      style={{ background: s.color + "0d" }}>
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: j * 0.09 + 0.1, type: "spring", stiffness: 280 }}
+                        className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: s.color + "28" }}>
+                        <FiCheck className="w-3 h-3" style={{ color: s.color }} />
+                      </motion.span>
+                      <span className="text-xs font-medium text-slate-700">{d}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+              <Link to="/services/request">
+                <motion.button
+                  whileHover={{ scale: 1.04, boxShadow: `0 14px 32px ${s.color}44` }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center gap-2 px-7 py-3 rounded-xl text-sm font-bold text-white w-full sm:w-auto justify-center sm:justify-start"
+                  style={{ background: `linear-gradient(135deg, ${s.color}, ${s.color}cc)` }}>
+                  {s.cta} <FiArrowRight className="w-4 h-4" />
+                </motion.button>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ─── ServicesBentoPanel ─── */
+function ServicesBentoPanel() {
+  const [active, setActive] = useState(0);
+  const s = SERVICES[active];
+
+  useEffect(() => {
+    const id = setTimeout(() => setActive(i => (i + 1) % SERVICES.length), 4000);
+    return () => clearTimeout(id);
+  }, [active]);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_370px] gap-5 xl:gap-8 items-start">
+
+      {/* ── Left: card grid ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        {SERVICES.map((svc, i) => {
+          const isActive = i === active;
+          return (
+            <motion.div key={i}
+              onClick={() => setActive(i)}
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.2, ease: "easeOut" } }}
+              whileTap={{ scale: 0.97 }}
+              className="relative cursor-pointer rounded-2xl p-4 sm:p-5 bg-white overflow-hidden select-none"
+              style={{
+                border: `1.5px solid ${isActive ? svc.color + "60" : "#E2E8F0"}`,
+                boxShadow: isActive
+                  ? `0 10px 36px ${svc.color}28`
+                  : "0 2px 10px rgba(0,0,0,0.04)",
+                transition: "border-color 0.3s, box-shadow 0.3s",
+              }}>
+
+              {/* Progress bar */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl overflow-hidden"
+                style={{ background: isActive ? svc.color + "18" : "transparent" }}>
+                {isActive && (
+                  <motion.div
+                    key={`bar-${active}`}
+                    className="h-full"
+                    style={{ background: svc.color }}
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 4, ease: "linear" }}
+                  />
+                )}
+              </div>
+
+              {/* Icon with animated ring */}
+              <div className="relative inline-block mb-3">
+                <motion.div
+                  className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center"
+                  style={{ background: svc.color + (isActive ? "22" : "12") }}
+                  animate={isActive ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                  transition={{ duration: 2.5, repeat: isActive ? Infinity : 0 }}>
+                  <svc.icon className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: svc.color }} />
+                </motion.div>
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 rounded-xl pointer-events-none"
+                    style={{ background: svc.color }}
+                    animate={{ scale: [1, 2], opacity: [0.28, 0] }}
+                    transition={{ duration: 1.8, repeat: Infinity }}
+                  />
+                )}
+              </div>
+
+              <h3 className="font-bold text-slate-800 text-[13px] sm:text-sm leading-tight mb-1 line-clamp-2">
+                {svc.title}
+              </h3>
+              <p className="hidden sm:block text-[11px] text-slate-400 leading-tight mb-3 line-clamp-1">
+                {svc.tagline}
+              </p>
+
+              <motion.span
+                className="inline-flex text-[11px] font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full mt-2 sm:mt-0"
+                style={{ background: svc.color + "12", color: svc.color }}
+                animate={{ opacity: isActive ? 1 : 0.6 }}>
+                {svc.price}
+              </motion.span>
+            </motion.div>
           );
         })}
       </div>
 
-      <div className="lg:col-span-3">
+      {/* ── Right: detail panel ── */}
+      <div className="lg:sticky lg:top-24">
         <AnimatePresence mode="wait">
           <motion.div key={active}
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            initial={{ opacity: 0, y: 20, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -18, scale: 0.97 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="rounded-3xl overflow-hidden"
-            style={{ border: `1.5px solid ${s.color}33`, background: "#fff" }}>
-            <div className="px-7 py-6 relative overflow-hidden"
-              style={{ background: `linear-gradient(135deg,${s.color}18,${s.color}08)` }}>
-              <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-10"
-                style={{ background: s.color }} />
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-0.5 flex-shrink-0"
-                  style={{ background: s.color }}>
-                  <span className="text-[10px] font-black text-white/70 leading-none">{s.n}</span>
-                  <s.icon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-black text-slate-900 text-xl leading-tight">{s.title}</h3>
-                  <p className="text-sm font-semibold mt-0.5" style={{ color: s.color }}>{s.tagline}</p>
-                </div>
+            style={{
+              background: "#fff",
+              border: `1.5px solid ${s.color}30`,
+              boxShadow: `0 20px 60px ${s.color}1a`,
+            }}>
+
+            {/* Colored header */}
+            <div className="relative px-6 py-7 overflow-hidden"
+              style={{ background: `linear-gradient(135deg, ${s.color}16, ${s.color}07)` }}>
+
+              {/* Decorative blobs */}
+              <motion.div className="absolute -right-12 -top-12 w-44 h-44 rounded-full pointer-events-none"
+                style={{ background: s.color, opacity: 0.13 }}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.div className="absolute right-6 bottom-0 w-24 h-24 rounded-full pointer-events-none"
+                style={{ background: s.color, opacity: 0.09 }}
+                animate={{ scale: [1, 1.4, 1] }}
+                transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
+
+              {/* Floating icon */}
+              <motion.div
+                className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 relative z-10"
+                style={{ background: s.color, boxShadow: `0 14px 36px ${s.color}55` }}
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}>
+                <s.icon className="w-7 h-7 text-white" />
+                <motion.div className="absolute inset-0 rounded-2xl pointer-events-none"
+                  style={{ background: s.color }}
+                  animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+                  transition={{ duration: 2.2, repeat: Infinity }} />
+              </motion.div>
+
+              <div className="relative z-10">
+                <h3 className="font-black text-slate-900 text-xl leading-tight">{s.title}</h3>
+                <p className="text-sm font-semibold mt-1" style={{ color: s.color }}>{s.tagline}</p>
               </div>
             </div>
-            <div className="px-7 py-6">
-              <p className="text-sm text-slate-600 leading-relaxed mb-6">{s.desc}</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-7">
-                {s.details.map((d, j) => (
-                  <motion.div key={j}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: j * 0.08 }}
-                    className="flex items-center gap-3 p-3 rounded-xl"
-                    style={{ background: s.color + "0d" }}>
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: s.color + "25" }}>
+
+            {/* Body */}
+            <div className="px-6 py-5">
+              <p className="text-sm text-slate-600 leading-relaxed mb-5">{s.desc}</p>
+
+              <p className="text-[11px] font-black uppercase tracking-[0.12em] mb-3" style={{ color: s.color }}>
+                What's Included
+              </p>
+
+              <ul className="space-y-2.5 mb-5">
+                {s.features.map((f, j) => (
+                  <motion.li key={`${active}-${j}`}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: j * 0.07 + 0.1, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex items-center gap-2.5 text-sm text-slate-700">
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: j * 0.07 + 0.15, type: "spring", stiffness: 300, damping: 18 }}
+                      className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ background: s.color + "20" }}>
                       <FiCheck className="w-3 h-3" style={{ color: s.color }} />
-                    </span>
-                    <span className="text-xs font-medium text-slate-700">{d}</span>
-                  </motion.div>
+                    </motion.span>
+                    {f}
+                  </motion.li>
                 ))}
+              </ul>
+
+              <div className="flex flex-wrap gap-2 mb-5">
+                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                  <FiClock className="w-3.5 h-3.5" /> {s.time}
+                </span>
+                <span className="px-3 py-1.5 rounded-full text-xs font-bold"
+                  style={{ background: s.color + "15", color: s.color }}>
+                  {s.price}
+                </span>
               </div>
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-2">
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                    onClick={() => setActive(i => Math.max(0, i - 1))}
-                    disabled={active === 0}
-                    className="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-sky-400 hover:text-sky-500 disabled:opacity-30 transition bg-white">
-                    <FiChevronLeft className="w-4 h-4" />
-                  </motion.button>
-                  <div className="flex gap-1.5">
-                    {STEPS.map((_, i) => (
-                      <motion.button key={i} onClick={() => setActive(i)}
-                        className="rounded-full" style={{ height: 6 }}
-                        animate={{ width: i === active ? "20px" : "6px", background: i === active ? s.color : "#CBD5E1" }}
-                        transition={{ duration: 0.3 }} />
-                    ))}
-                  </div>
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                    onClick={() => setActive(i => Math.min(STEPS.length - 1, i + 1))}
-                    disabled={active === STEPS.length - 1}
-                    className="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-sky-400 hover:text-sky-500 disabled:opacity-30 transition bg-white">
-                    <FiChevronRight className="w-4 h-4" />
-                  </motion.button>
-                </div>
-                <Link to="/services/request">
-                  <motion.button whileHover={{ scale: 1.05, boxShadow: `0 10px 24px ${s.color}44` }}
-                    whileTap={{ scale: 0.97 }}
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white"
-                    style={{ background: `linear-gradient(135deg,${s.color},${s.color}bb)` }}>
-                    {s.cta} <FiArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </Link>
+
+              <Link to="/services/request">
+                <motion.button
+                  whileHover={{ scale: 1.04, boxShadow: `0 14px 36px ${s.color}44` }}
+                  whileTap={{ scale: 0.97 }}
+                  className="flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl text-sm font-bold text-white"
+                  style={{ background: `linear-gradient(135deg, ${s.color}, ${s.color}cc)` }}>
+                  Book This Service <FiArrowRight className="w-4 h-4" />
+                </motion.button>
+              </Link>
+
+              <div className="flex justify-center gap-1.5 mt-5">
+                {SERVICES.map((svc, i) => (
+                  <motion.button key={i} onClick={() => setActive(i)}
+                    className="rounded-full"
+                    style={{ height: 5 }}
+                    animate={{
+                      width: i === active ? "20px" : "5px",
+                      background: i === active ? s.color : "#CBD5E1",
+                    }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{ scale: 1.4 }}
+                  />
+                ))}
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
-  );
-}
-
-/* ─── ServicesPanel ─── */
-function ServicesPanel() {
-  const [active, setActive] = useState(0);
-  const tabsRef = useRef(null);
-  const s = SERVICES[active];
-
-  useEffect(() => {
-    const el = tabsRef.current?.querySelector(`[data-idx="${active}"]`);
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  }, [active]);
-
-  return (
-    <div className="rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-sm">
-      <div ref={tabsRef}
-        className="flex gap-0 overflow-x-auto border-b border-slate-100"
-        style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-        {SERVICES.map((svc, i) => {
-          const isActive = i === active;
-          return (
-            <button key={i} data-idx={i}
-              onClick={() => setActive(i)}
-              className="relative flex-shrink-0 flex flex-col items-center gap-1 px-3 py-3 text-xs font-semibold transition-all duration-200"
-              style={{ color: isActive ? svc.color : "#94A3B8", minWidth: "80px" }}>
-              <motion.div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                animate={{ opacity: isActive ? 1 : 0, scaleX: isActive ? 1 : 0 }}
-                transition={{ duration: 0.25 }}
-                style={{ background: svc.color, transformOrigin: "center" }} />
-              <motion.div className="w-8 h-8 rounded-xl flex items-center justify-center transition-all"
-                animate={{ background: isActive ? svc.color + "18" : "#F1F5F9", scale: isActive ? 1.1 : 1 }}
-                transition={{ duration: 0.2 }}>
-                <svc.icon className="w-4 h-4" style={{ color: isActive ? svc.color : "#94A3B8" }} />
-              </motion.div>
-              <span className="text-center leading-tight whitespace-nowrap text-[10px]">{svc.title.split(" ").slice(0, 2).join(" ")}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <AnimatePresence mode="wait">
-        <motion.div key={active}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -16 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="p-4 md:p-8">
-          <div className="h-1 w-16 rounded-full mb-5" style={{ background: `linear-gradient(90deg,${s.color},${s.color}66)` }} />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-            <div>
-              <div className="flex items-center gap-3 mb-4 flex-wrap">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: s.color + "15" }}>
-                  <s.icon className="w-5 h-5" style={{ color: s.color }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-black text-slate-900 text-base leading-tight">{s.title}</h3>
-                  <p className="text-xs font-semibold mt-0.5" style={{ color: s.color }}>{s.tagline}</p>
-                </div>
-                <span className="text-2xl">{s.emoji}</span>
-              </div>
-              <p className="text-sm text-slate-600 leading-relaxed mb-4">{s.desc}</p>
-              <div className="flex flex-wrap gap-2 mb-5">
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
-                  <FiClock className="w-3.5 h-3.5" /> {s.time}
-                </span>
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
-                  style={{ background: s.color + "15", color: s.color }}>
-                  {s.price}
-                </span>
-              </div>
-              <Link to="/services/request">
-                <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold text-white w-full sm:w-auto justify-center"
-                  style={{ background: `linear-gradient(135deg,${s.color},${s.color}bb)` }}>
-                  Book This Service <FiArrowRight className="w-4 h-4" />
-                </motion.button>
-              </Link>
-            </div>
-            <div className="rounded-2xl p-4" style={{ background: s.color + "08", border: `1px solid ${s.color}22` }}>
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: s.color }}>
-                What's Included
-              </p>
-              <ul className="space-y-2">
-                {s.features.map((f, j) => (
-                  <motion.li key={j}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: j * 0.06, duration: 0.25 }}
-                    className="flex items-center gap-2.5 text-sm text-slate-700">
-                    <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: s.color + "20" }}>
-                      <FiCheck className="w-3 h-3" style={{ color: s.color }} />
-                    </span>
-                    {f}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </div>
-          <div className="flex justify-center gap-2 mt-8">
-            {SERVICES.map((_, i) => (
-              <motion.button key={i} onClick={() => setActive(i)}
-                className="rounded-full transition-all"
-                style={{ height: 6 }}
-                animate={{
-                  width: i === active ? "24px" : "6px",
-                  background: i === active ? s.color : "#CBD5E1",
-                }}
-                transition={{ duration: 0.3 }} />
-            ))}
-          </div>
-        </motion.div>
-      </AnimatePresence>
     </div>
   );
 }
@@ -560,23 +953,27 @@ export function Home() {
           HERO
       ══════════════════════════════════════════ */}
       <section className="relative overflow-hidden py-24 xl:py-32 2xl:py-40 px-6 md:px-10 lg:px-16"
-        style={{ background: "linear-gradient(135deg,#0f172a 0%,#0f2744 55%,#1e293b 100%)" }}>
+        style={{ background: "linear-gradient(135deg,#0a0f1e 0%,#0d2040 50%,#141e33 100%)" }}>
 
         {/* dot grid */}
-        <div className="absolute inset-0 pointer-events-none dot-grid-light" />
+        <div className="absolute inset-0 pointer-events-none dot-grid-light opacity-40" />
 
         {/* animated glow orbs */}
         {[
-          { w: 500, h: 500, top: "-150px", left: "-150px", color: "#0EA5E9" },
-          { w: 380, h: 380, bottom: "-100px", right: "-100px", color: "#10B981" },
-          { w: 260, h: 260, top: "30%", left: "40%", color: "#8B5CF6" },
+          { w: 560, h: 560, top: "-180px", left: "-180px", color: "#0EA5E9" },
+          { w: 420, h: 420, bottom: "-120px", right: "-120px", color: "#10B981" },
+          { w: 280, h: 280, top: "35%",  left: "38%",  color: "#8B5CF6" },
         ].map((o, i) => (
           <motion.div key={i} className="absolute rounded-full pointer-events-none"
             style={{ width: o.w, height: o.h, top: o.top, left: o.left, bottom: o.bottom, right: o.right,
-              background: o.color, opacity: 0.1, filter: "blur(90px)" }}
-            animate={{ scale: [1, 1.2, 1], x: [0, i % 2 === 0 ? 20 : -20, 0], y: [0, i % 2 === 0 ? -20 : 20, 0] }}
-            transition={{ duration: 7 + i * 2, repeat: Infinity, ease: "easeInOut" }} />
+              background: o.color, opacity: 0.12, filter: "blur(100px)" }}
+            animate={{ scale: [1, 1.22, 1], x: [0, i % 2 === 0 ? 25 : -25, 0], y: [0, i % 2 === 0 ? -25 : 25, 0] }}
+            transition={{ duration: 8 + i * 2.5, repeat: Infinity, ease: "easeInOut" }} />
         ))}
+
+        {/* scanline overlay */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
+          style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.5) 2px, rgba(255,255,255,0.5) 4px)" }} />
 
         <div className="relative z-10 max-w-7xl 2xl:max-w-[1600px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 xl:gap-20 items-center">
 
@@ -587,36 +984,35 @@ export function Home() {
               style={{ background: "rgba(14,165,233,0.18)", color: "#38BDF8", border: "1px solid rgba(14,165,233,0.3)" }}>
               <motion.span className="w-2 h-2 flex-shrink-0 rounded-full bg-emerald-400"
                 animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }} transition={{ duration: 1.8, repeat: Infinity }} />
-              <span className="truncate">Expert IT Repair · Data Recovery · Support</span>
+              <span className="truncate">Pune's Trusted IT Partner Since 2019</span>
             </motion.div>
 
             <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 text-white"
+              className="text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl font-black leading-tight mb-6 text-white"
               style={{ fontFamily: "var(--font-display)", letterSpacing: "-0.03em" }}>
-              Fast &amp; Reliable{" "}
-              <span className="grad-anim"
-                style={{ backgroundImage: "linear-gradient(135deg,#38BDF8,#0EA5E9,#4FD1C5,#38BDF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", backgroundSize: "300% 300%" }}>
-                IT Repair &amp; Support
-              </span>
+              Fast &amp; Reliable
+              <br />
+              <TypedText />
             </motion.h1>
 
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25 }}
-              className="text-lg text-slate-400 leading-relaxed mb-10 max-w-xl xl:max-w-2xl">
-              Laptop repair, data recovery, network setup, software installation, and IT support for offices.{" "}
+              className="text-base md:text-lg text-slate-400 leading-relaxed mb-10 max-w-xl">
+              Laptop repair, data recovery, network setup, software installation, and IT support for offices in Pune.{" "}
               <span className="text-slate-300 font-medium">Free diagnosis · Transparent pricing · 30-day warranty.</span>
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-col sm:flex-row gap-4 mb-10">
               <Link to="/services/request" className="w-full sm:w-auto">
-                <motion.button whileHover={{ scale: 1.07, boxShadow: "0 14px 36px rgba(58,182,255,0.5)" }}
+                <motion.button
+                  whileHover={{ scale: 1.06, boxShadow: "0 16px 40px rgba(58,182,255,0.55)" }}
                   whileTap={{ scale: 0.96 }}
-                  className="w-full sm:w-auto h-14 flex items-center justify-center gap-2 px-8 rounded-xl font-bold text-base text-white btn-primary">
+                  className="w-full sm:w-auto h-14 flex items-center justify-center gap-2 px-8 rounded-xl font-bold text-base text-white btn-primary pulse-ring">
                   Book a Service <FiArrowRight className="w-4 h-4 flex-shrink-0" />
                 </motion.button>
               </Link>
-              <Link to="/services/request" className="w-full sm:w-auto">
-                <motion.button whileHover={{ scale: 1.05, background: "rgba(255,255,255,0.14)" }}
+              <Link to="/services" className="w-full sm:w-auto">
+                <motion.button whileHover={{ scale: 1.04, background: "rgba(255,255,255,0.14)" }}
                   whileTap={{ scale: 0.96 }}
                   className="w-full sm:w-auto h-14 flex items-center justify-center gap-2 px-8 rounded-xl font-bold text-white text-base btn-ghost-light">
                   View Services <FiArrowRight className="w-4 h-4 flex-shrink-0" />
@@ -625,8 +1021,8 @@ export function Home() {
             </motion.div>
 
             {/* Hero trust badges */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex flex-wrap items-center gap-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65, duration: 0.6 }}
+              className="flex flex-wrap items-center gap-x-5 gap-y-2">
               {[
                 { icon: "⭐", text: "4.9/5 Rating" },
                 { icon: "🔒", text: "30-Day Warranty" },
@@ -634,72 +1030,94 @@ export function Home() {
               ].map((b, i) => (
                 <span key={i} className="flex items-center gap-1.5 text-xs font-semibold text-slate-400">
                   <span>{b.icon}</span> {b.text}
-                  {i < 2 && <span className="ml-4 text-slate-700">·</span>}
                 </span>
               ))}
             </motion.div>
           </div>
 
-          {/* right — command center card */}
-          <motion.div initial={{ opacity: 0, scale: 0.88, y: 40 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:block">
-            <motion.div animate={{ y: [0, -16, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
-              className="rounded-3xl overflow-hidden"
-              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(18px)" }}>
-              <div className="px-6 pt-6 pb-3 text-center">
-                <motion.div className="text-4xl mb-2"
-                  animate={{ scale: [1, 1.12, 1] }} transition={{ duration: 2.5, repeat: Infinity }}>🖥️</motion.div>
-                <p className="text-white font-bold text-lg mb-0.5">Your IT Command Center</p>
-                <p className="text-slate-400 text-xs">Latest updates and offers</p>
-              </div>
-              <div className="px-4 pb-4"><BannerCarousel /></div>
-            </motion.div>
-          </motion.div>
+          {/* right — animated hero card */}
+          <HeroCard />
         </div>
+
+        {/* bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
+          style={{ background: "linear-gradient(to bottom, transparent, rgba(248,250,252,0.04))" }} />
       </section>
 
       {/* ══════════════════════════════════════════
-          TRUST BAR — scroll reveal with stagger
+          TRUST STRIPS — diagonal scrolling bands
       ══════════════════════════════════════════ */}
-      <section className="relative z-10 bg-white border-b border-slate-100 shadow-sm">
-        <StaggerContainer className="max-w-6xl mx-auto flex flex-wrap justify-center md:justify-between">
-          {TRUST_STATS.map((stat, i) => (
-            <motion.div key={i} variants={fadeUp} custom={i * 0.07}
-              className="trust-stat flex-1 min-w-[130px]">
-              <div className="flex items-center gap-2 mb-1">
-                <stat.icon className="w-4 h-4 text-sky-400 flex-shrink-0" />
-                <span className="trust-stat-number">{stat.value}</span>
-              </div>
-              <span className="trust-stat-label">{stat.label}</span>
-            </motion.div>
-          ))}
-        </StaggerContainer>
-      </section>
+      <div className="relative" style={{ zIndex: 10, overflow: "hidden" }}>
+
+        <div className="strip-ribbon">
+
+          {/* Strip 1 — electric blue, scrolls left */}
+          <div style={{ background: "linear-gradient(90deg,#3AB6FF,#1E90FF)", overflow: "hidden", boxShadow: "0 4px 20px rgba(58,182,255,0.35)" }}>
+            <div className="marquee-inner" style={{ animationDuration: "30s" }}>
+              {[...MARQUEE_ROW1, ...MARQUEE_ROW1].map((item, i) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+                  <span className="strip-item-text">{item.text}</span>
+                  <span className="strip-item-sep">/</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Strip 2 — deep brand blue, scrolls right */}
+          <div style={{ background: "linear-gradient(90deg,#2B0FA8,#1a3a6e)", overflow: "hidden", boxShadow: "0 4px 20px rgba(43,15,168,0.35)" }}>
+            <div className="marquee-inner" style={{ animationDuration: "24s", animationDirection: "reverse" }}>
+              {[...MARQUEE_ROW2, ...MARQUEE_ROW2].map((item, i) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+                  <span className="strip-item-text">{item.text}</span>
+                  <span className="strip-item-sep">/</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
 
       {/* ══════════════════════════════════════════
-          SERVICES — scroll reveal from below
+          SERVICES
       ══════════════════════════════════════════ */}
-      <section className="py-20 px-6 md:px-10 lg:px-16 bg-slate-50">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-20 px-6 md:px-10 lg:px-16 relative overflow-hidden"
+        style={{ background: "linear-gradient(150deg,#f0f9ff 0%,#f8fafc 55%,#fff 100%)" }}>
+
+        {/* Animated background orbs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <motion.div className="absolute -top-36 -right-36 w-[420px] h-[420px] rounded-full"
+            style={{ background: "radial-gradient(circle,rgba(14,165,233,0.13) 0%,transparent 70%)" }}
+            animate={{ scale: [1, 1.18, 1], x: [0, 18, 0], y: [0, -18, 0] }}
+            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }} />
+          <motion.div className="absolute -bottom-28 -left-28 w-[360px] h-[360px] rounded-full"
+            style={{ background: "radial-gradient(circle,rgba(139,92,246,0.10) 0%,transparent 70%)" }}
+            animate={{ scale: [1, 1.22, 1], x: [0, -12, 0], y: [0, 12, 0] }}
+            transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", delay: 1.5 }} />
+          <motion.div className="absolute top-1/2 left-1/3 w-60 h-60 rounded-full"
+            style={{ background: "radial-gradient(circle,rgba(16,185,129,0.07) 0%,transparent 70%)" }}
+            animate={{ scale: [1, 1.35, 1] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 3 }} />
+        </div>
+
+        <div className="max-w-6xl mx-auto relative">
           <FadeUp className="text-center mb-12">
-            <SectionLabel text="What We Offer" color="#1E293B" />
+            <SectionLabel text="What We Offer" color="#0EA5E9" />
             <h2 className="ct-h2 text-slate-900">Our Services</h2>
             <p className="text-slate-500 mt-3 max-w-2xl mx-auto">
               We handle all your IT needs — from quick fixes to complete system overhauls.
             </p>
           </FadeUp>
-
-          <ScaleIn delay={0.1}>
-            <ServicesPanel />
-          </ScaleIn>
+          <FadeUp delay={0.1}>
+            <ServicesBentoPanel />
+          </FadeUp>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════
-          HOW IT WORKS — alternating reveals
+          HOW IT WORKS
       ══════════════════════════════════════════ */}
-      <section className="py-20 px-6 md:px-10 lg:px-16">
+      <section className="py-20 px-6 md:px-10 lg:px-16 bg-white overflow-x-hidden">
         <div className="max-w-6xl mx-auto">
           <FadeUp className="text-center mb-14">
             <SectionLabel text="The Process" />
@@ -708,15 +1126,14 @@ export function Home() {
               From submitting your issue to getting your device back — here's exactly what happens.
             </p>
           </FadeUp>
-
           <FadeUp delay={0.1}>
-            <HowItWorksPanel />
+            <HowItWorksTimeline />
           </FadeUp>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════
-          PRICING PILLARS — staggered scale-in
+          PRICING PILLARS
       ══════════════════════════════════════════ */}
       <section className="py-20 px-6 md:px-10 lg:px-16 bg-slate-50">
         <div className="max-w-4xl mx-auto">
@@ -725,15 +1142,15 @@ export function Home() {
             <h2 className="ct-h2 text-slate-900">Transparent, Honest Pricing</h2>
             <p className="text-slate-500 mt-3">No hidden fees. No surprises.</p>
           </FadeUp>
-
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PRICING_PILLARS.map((item, i) => (
               <motion.div key={i} variants={scaleIn} custom={i * 0.1}>
-                <motion.div className="card-shimmer p-8 text-center h-full rounded-xl border border-slate-200"
-                  whileHover={{ y: -8, boxShadow: "0 24px 48px rgba(58,182,255,0.15)" }}>
+                <motion.div className="p-8 text-center h-full rounded-2xl bg-white border border-slate-200 cursor-default"
+                  whileHover={{ y: -10, boxShadow: "0 28px 56px rgba(14,165,233,0.14)", borderColor: "rgba(14,165,233,0.25)" }}
+                  transition={{ type: "spring", stiffness: 280, damping: 22 }}>
                   <motion.div className="text-5xl mb-5 inline-block"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.4 }}>
+                    animate={{ scale: [1, 1.12, 1], rotate: [0, 3, -3, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }}>
                     {item.icon}
                   </motion.div>
                   <h3 className="font-bold text-slate-800 mb-2 text-lg">{item.title}</h3>
@@ -746,33 +1163,32 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          TESTIMONIALS CAROUSEL — fade from sides
+          TESTIMONIALS CAROUSEL
       ══════════════════════════════════════════ */}
       {testimonials === null ? (
-        <section className="py-20 px-6 md:px-10 lg:px-16">
+        <section className="py-20 px-6 md:px-10 lg:px-16 bg-white">
           <div className="max-w-4xl mx-auto">
             <Shimmer className="h-8 w-48 mx-auto mb-4" />
             <Shimmer className="h-56 w-full" />
           </div>
         </section>
       ) : testimonials.length > 0 && (
-        <section className="py-20 px-6 md:px-10 lg:px-16">
+        <section className="py-20 px-6 md:px-10 lg:px-16 bg-white">
           <div className="max-w-4xl mx-auto">
             <FadeUp className="text-center mb-10">
               <SectionLabel text="Testimonials" />
               <h2 className="ct-h2 text-slate-900">What Customers Say</h2>
             </FadeUp>
-
             <ScaleIn>
               <div className="relative px-8 md:px-12">
                 <AnimatePresence mode="wait">
                   <motion.div key={testimonialIdx}
-                    initial={{ opacity: 0, x: 60 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -60 }}
-                    transition={{ duration: 0.45, ease: "easeInOut" }}
-                    className="card p-8 md:p-10"
-                    style={{ background: "linear-gradient(135deg,#fff,#F8FAFC)", borderColor: "rgba(58,182,255,0.15)" }}>
+                    initial={{ opacity: 0, x: 60, scale: 0.97 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -60, scale: 0.97 }}
+                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                    className="rounded-3xl p-8 md:p-10 bg-white"
+                    style={{ border: "1.5px solid rgba(14,165,233,0.15)", boxShadow: "0 8px 40px rgba(14,165,233,0.08)" }}>
                     <div className="flex gap-1 mb-5">
                       {Array(5).fill(0).map((_, j) => (
                         <motion.span key={j} className="text-yellow-400 text-xl"
@@ -835,7 +1251,7 @@ export function Home() {
       )}
 
       {/* ══════════════════════════════════════════
-          WORK GALLERY — staggered grid reveal
+          WORK GALLERY
       ══════════════════════════════════════════ */}
       {gallery === null ? (
         <section className="py-20 px-6 md:px-10 lg:px-16 bg-slate-50">
@@ -850,12 +1266,12 @@ export function Home() {
               <SectionLabel text="Our Work" color="#1E293B" />
               <h2 className="ct-h2 text-slate-900">Recent Repairs &amp; Projects</h2>
             </FadeUp>
-
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {gallery.slice(0, 6).map((item, i) => (
                 <motion.div key={i} variants={fadeUp} custom={i * 0.07} className="h-full">
-                  <motion.div className="card-shimmer overflow-hidden cursor-pointer h-full flex flex-col rounded-xl"
-                    whileHover={{ scale: 1.03, boxShadow: "0 24px 48px rgba(0,0,0,0.12)" }}>
+                  <motion.div className="overflow-hidden cursor-pointer h-full flex flex-col rounded-2xl bg-white border border-slate-200"
+                    whileHover={{ scale: 1.03, boxShadow: "0 24px 52px rgba(0,0,0,0.12)", borderColor: "rgba(14,165,233,0.25)" }}
+                    transition={{ type: "spring", stiffness: 280, damping: 22 }}>
                     {item.image && (
                       <div className="relative overflow-hidden h-48 bg-slate-100">
                         <motion.img src={item.image} alt={item.title}
@@ -886,9 +1302,9 @@ export function Home() {
       )}
 
       {/* ══════════════════════════════════════════
-          FAQ — staggered accordion reveal
+          FAQ
       ══════════════════════════════════════════ */}
-      <section className="py-20 px-6 md:px-10 lg:px-16">
+      <section className="py-20 px-6 md:px-10 lg:px-16 bg-white">
         <div className="max-w-3xl mx-auto">
           <FadeUp className="text-center mb-12">
             <SectionLabel text="FAQ" />
@@ -902,26 +1318,25 @@ export function Home() {
       </section>
 
       {/* ══════════════════════════════════════════
-          CTA BANNER — scale reveal
+          CTA BANNER
       ══════════════════════════════════════════ */}
       <section className="py-24 px-6 md:px-10 lg:px-16 relative overflow-hidden"
-        style={{ background: "linear-gradient(135deg,#0f172a,#0f2744,#1e293b)" }}>
+        style={{ background: "linear-gradient(135deg,#0a0f1e 0%,#0d2040 55%,#141e33 100%)" }}>
 
-        <div className="absolute inset-0 dot-grid-light pointer-events-none" />
+        <div className="absolute inset-0 dot-grid-light pointer-events-none opacity-40" />
 
         <motion.div className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 50% 50%,rgba(14,165,233,0.16),transparent 65%)" }}
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }} />
+          style={{ background: "radial-gradient(ellipse at 50% 50%,rgba(14,165,233,0.18),transparent 65%)" }}
+          animate={{ scale: [1, 1.18, 1] }}
+          transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }} />
 
-        {/* corner glows */}
         {[
-          { top: "-60px", left: "-60px", color: "#0EA5E9" },
-          { bottom: "-60px", right: "-60px", color: "#4FD1C5" },
+          { top: "-70px",    left: "-70px",   color: "#0EA5E9" },
+          { bottom: "-70px", right: "-70px",  color: "#4FD1C5" },
         ].map((o, i) => (
-          <motion.div key={i} className="absolute w-56 h-56 rounded-full pointer-events-none"
-            style={{ ...o, background: o.color, opacity: 0.12, filter: "blur(70px)" }}
-            animate={{ scale: [1, 1.3, 1] }}
+          <motion.div key={i} className="absolute w-64 h-64 rounded-full pointer-events-none"
+            style={{ ...o, background: o.color, opacity: 0.12, filter: "blur(80px)" }}
+            animate={{ scale: [1, 1.35, 1] }}
             transition={{ duration: 6 + i, repeat: Infinity, ease: "easeInOut", delay: i }} />
         ))}
 
@@ -954,9 +1369,9 @@ export function Home() {
               className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/services/request">
                 <motion.button
-                  whileHover={{ scale: 1.08, boxShadow: "0 20px 48px rgba(58,182,255,0.5)" }}
+                  whileHover={{ scale: 1.08, boxShadow: "0 22px 52px rgba(58,182,255,0.55)" }}
                   whileTap={{ scale: 0.96 }}
-                  animate={{ boxShadow: ["0 0 0 0 rgba(58,182,255,0.4)", "0 0 0 16px rgba(58,182,255,0)", "0 0 0 0 rgba(58,182,255,0)"] }}
+                  animate={{ boxShadow: ["0 0 0 0 rgba(58,182,255,0.4)", "0 0 0 18px rgba(58,182,255,0)", "0 0 0 0 rgba(58,182,255,0)"] }}
                   transition={{ duration: 2.2, repeat: Infinity }}
                   className="btn-primary px-10 py-4 text-lg font-black rounded-2xl">
                   Request Service <FiArrowRight className="inline w-5 h-5 ml-1" />
@@ -985,10 +1400,8 @@ export function Home() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-2xl text-white font-bold text-sm"
-        style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}>
-        <motion.span
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1.8, repeat: Infinity }}>
+        style={{ background: "linear-gradient(135deg,#25D366,#128C7E)", boxShadow: "0 8px 32px rgba(37,211,102,0.4)" }}>
+        <motion.span animate={{ scale: [1, 1.25, 1] }} transition={{ duration: 1.8, repeat: Infinity }}>
           <FaWhatsapp className="w-5 h-5" />
         </motion.span>
         <span className="hidden sm:inline">Chat on WhatsApp</span>
