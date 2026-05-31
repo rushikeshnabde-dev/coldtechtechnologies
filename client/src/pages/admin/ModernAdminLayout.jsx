@@ -32,8 +32,11 @@ export function ModernAdminLayout() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#06091A' }}>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-2xl border-2 border-[#3AB6FF]/30 border-t-[#3AB6FF] rounded-full animate-spin" />
+          <p className="text-sm text-slate-500">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
@@ -55,7 +58,7 @@ export function ModernAdminLayout() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen" style={{ background: '#06091A' }}>
         <ModernSidebar
           isCollapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -68,8 +71,13 @@ export function ModernAdminLayout() {
           userAvatar={user?.avatar}
           isCollapsed={sidebarCollapsed}
         />
-        <main className={`pt-16 transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
-          <Outlet />
+        <main
+          className="pt-16 transition-all duration-300 min-h-screen"
+          style={{ marginLeft: sidebarCollapsed ? 72 : 256 }}
+        >
+          <div className="p-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </ThemeProvider>

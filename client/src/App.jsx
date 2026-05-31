@@ -141,7 +141,7 @@ export default function App() {
             <Route path="/admin/reports" element={<Navigate to="/admin-coldtech-secure/accounting/reports" replace />} />
 
             <Route path="/admin-coldtech-secure" element={<ModernAdminLayout />}>
-              <Route index element={<IntelligentDashboard />} />
+              <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="services" element={<AdminServices />} />
